@@ -634,11 +634,6 @@ router
     ctx.body = await publishCustomView();
   })
   .get("/json/:message", async (ctx) => {
-    if (config.public) {
-      throw new Error(
-        "Sorry, many actions are unavailable when Oasis is running in public mode. Please run Oasis in the default mode and try again."
-      );
-    }
     const { message } = ctx.params;
     ctx.type = "application/json";
     const json = async (message) => {

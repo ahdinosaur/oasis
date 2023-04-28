@@ -202,7 +202,7 @@ module.exports = ({ cooler, isPublic }) => {
         key: "publicWebHosting",
         feedId,
       });
-      return result === true;
+      return result !== false;
     },
     name: async (feedId) => {
       if (isPublic && (await models.about.publicWebHosting(feedId)) === false) {
@@ -806,7 +806,7 @@ module.exports = ({ cooler, isPublic }) => {
             lodash.set(
               msg,
               "value.content.text",
-              "This is a public message that has been redacted because Oasis is running in public mode. This redaction is only meant to make Oasis consistent with other public SSB viewers. Please do not mistake this for privacy. All public messages are public. Any peer on the SSB network can see this message."
+              "Redacted"
             );
 
             if (msg.value.content.contentWarning != null) {
