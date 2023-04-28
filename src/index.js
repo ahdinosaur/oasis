@@ -8,6 +8,7 @@ const envPaths = require("env-paths");
 const cli = require("./cli");
 const fs = require("fs");
 const exif = require("piexifjs");
+const FileType = require('file-type')
 
 const defaultConfig = {};
 const defaultConfigFile = path.join(
@@ -307,7 +308,6 @@ const handleBlobUpload = async function (ctx) {
   };
 
   // determine encoding to add the correct markdown link
-  const FileType = require("file-type");
   try {
     let fileType = await FileType.fromBuffer(data);
     blob.mime = fileType.mime;
@@ -662,6 +662,8 @@ router
     // in the case of malformed XML like `<svg><div></svg>`.
     if (isSvg(buffer)) {
       ctx.type = "image/svg+xml";
+    } else {
+      ctx.type = await FileType.fromBuffer(buffer)
     }
   })
   .get("/image/:imageSize/:blobId", async (ctx) => {
