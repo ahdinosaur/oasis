@@ -129,7 +129,7 @@ Alternatively, you can set the default port in ${defaultConfigFile} with:
       });
     });
   } else {
-    throw err;
+    throw err
   }
 });
 

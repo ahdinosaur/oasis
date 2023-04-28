@@ -1052,8 +1052,12 @@ module.exports = ({ cooler, isPublic }) => {
           pull.take(maxMessages),
           pull.unique((message) => message.value.content.vote.link),
           pullParallelMap(async (val, cb) => {
-            const msg = await post.get(val.value.content.vote.link);
-            cb(null, msg);
+            try {
+              const msg = await post.get(val.value.content.vote.link);
+              cb(null, msg)
+            } catch (err) {
+              cb(new Error(err.message))
+            }
           }),
           pull.filter((message) =>
             message.value.meta.votes.map((voter) => voter.key).includes(feed)
@@ -1254,14 +1258,18 @@ module.exports = ({ cooler, isPublic }) => {
           extendedFilter,
           pull.take(maxMessages),
           pullParallelMap(async (message, cb) => {
-            // Retrieve a preview of this post's comments / thread
-            const thread = await post.fromThread(message.key);
-            lodash.set(
-              message,
-              "value.meta.thread",
-              await transform(ssb, thread, myFeedId)
-            );
-            cb(null, message);
+            try {
+              // Retrieve a preview of this post's comments / thread
+              const thread = await post.fromThread(message.key);
+              lodash.set(
+                message,
+                "value.meta.thread",
+                await transform(ssb, thread, myFeedId)
+              );
+              cb(null, message);
+            } catch (err) {
+              cb(new Error(err.message))
+            }
           }),
           pull.collect((err, collectedMessages) => {
             if (err) {
@@ -1305,14 +1313,18 @@ module.exports = ({ cooler, isPublic }) => {
           pull.filter((message) => isNotPrivate(message) && hasNoRoot(message)),
           pull.take(maxMessages),
           pullParallelMap(async (message, cb) => {
-            // Retrieve a preview of this post's comments / thread
-            const thread = await post.fromThread(message.key);
-            lodash.set(
-              message,
-              "value.meta.thread",
-              await transform(ssb, thread, myFeedId)
-            );
-            cb(null, message);
+            try {
+              // Retrieve a preview of this post's comments / thread
+              const thread = await post.fromThread(message.key);
+              lodash.set(
+                message,
+                "value.meta.thread",
+                await transform(ssb, thread, myFeedId)
+              );
+              cb(null, message);
+            } catch (err) {
+              cb(new Error(err.message))
+            }
           }),
           pull.filter((message) => message.value.meta.thread.length > 1),
           pull.collect((err, collectedMessages) => {
