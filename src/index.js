@@ -726,9 +726,10 @@ router
                     .resize(imageSize, imageSize)
                     .png()
                     .toBuffer()
-                    .then((data) => {
-                      resolve(data);
-                    });
+                    .then(resolve, (err) => {
+                      console.error(err)
+                      resolve(fakeImage(imageSize))
+                    })
                 } else {
                   resolve(buffer);
                 }
